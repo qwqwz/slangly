@@ -1,21 +1,44 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import UserModel from '../models/user.js';
-import * as userService from '../service/user-service.js';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+
+import UserModel from "../models/User.js";
 
 export const register = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
-    const userData = await userService.register(email, password, name);
-    res.cookie('refreshToken', userData.refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
+    const password = req.body.password;
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+
+    const doc = new UserModel({
+      name: req.body.name,
+      email: req.body.email,
+      hashPassword: hash,
     });
-    return res.json(userData);
+
+    console.log(doc);
+
+    const user = await doc.save();
+
+    const token = jwt.sign(
+      {
+        _id: user._id,
+      },
+      "secret123",
+      {
+        expiresIn: "30d",
+      }
+    );
+
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json({
+      ...userData,
+      token,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Ошибка при регистрации.',
+      message: "Не удалось зарегистрироваться",
     });
   }
 };
@@ -25,16 +48,19 @@ export const login = async (req, res) => {
     const user = await UserModel.findOne({ email: req.body.email });
 
     if (!user) {
-      return res.status(400).json({
-        message: 'Неверный email или пароль',
+      return res.status(404).json({
+        message: "Пользователь не найден",
       });
     }
 
-    const isValidPass = await bcrypt.compare(req.body.password, user._doc.password_hash);
+    const isValidPass = await bcrypt.compare(
+      req.body.password,
+      user._doc.passwordHash
+    );
 
     if (!isValidPass) {
       return res.status(400).json({
-        message: 'Неверный email или пароль',
+        message: "Неверный логин или пароль",
       });
     }
 
@@ -42,64 +68,43 @@ export const login = async (req, res) => {
       {
         _id: user._id,
       },
-      'secret123',
+      "secret123",
       {
-        expiresIn: '30d',
-      },
+        expiresIn: "30d",
+      }
     );
 
-    const { password_hash, ...userData } = user._doc;
-    res.json({ ...userData, token });
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json({
+      ...userData,
+      token,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Ошибка при авторизации.',
+      message: "Не удалось авторизоваться",
     });
   }
 };
 
-export const getUser = async (req, res) => {
+export const getMe = async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId);
 
     if (!user) {
       return res.status(404).json({
-        message: 'Пользователь не найден.',
+        message: "Пользователь не найден",
       });
     }
-    const { password_hash, ...userData } = user._doc;
-    res.json({ ...userData });
+
+    const { passwordHash, ...userData } = user._doc;
+
+    res.json(userData);
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Ошибка при получении данных.',
+      message: "Нет доступа",
     });
-  }
-};
-
-export const logout = async (req, res) => {
-  try {
-  } catch (err) {}
-};
-
-export const refresh = async (req, res) => {
-  try {
-  } catch (err) {}
-};
-
-export const getUsers = async (req, res) => {
-  try {
-    console.log('getUsers');
-    res.json();
-  } catch (err) {}
-};
-
-export const activate = async (req, res) => {
-  try {
-    const activationLink = req.params.link;
-    await userService.activate(activationLink);
-    return res.redirect(process.env.CLIENT_URL);
-  } catch (err) {
-    console.log(err);
   }
 };

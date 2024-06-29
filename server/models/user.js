@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
 const UserSchema = new Schema(
   {
@@ -17,7 +17,7 @@ const UserSchema = new Schema(
     },
     isActivated: {
       type: Boolean,
-      required: true,
+      required: false,
       default: false,
     },
     activationLink: {
@@ -27,7 +27,7 @@ const UserSchema = new Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-export default model('User', UserSchema);
+export default model("User", UserSchema);
