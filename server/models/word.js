@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
 const WordSchema = new Schema(
   {
@@ -6,10 +6,14 @@ const WordSchema = new Schema(
       type: String,
       required: true,
     },
+    tags: {
+      type: Array,
+      required: false,
+    },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-export default model('Word', WordSchema);
+export default model("Word", WordSchema);

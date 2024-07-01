@@ -27,9 +27,14 @@ router.post(
   UserController.register
 );
 
+router.get(
+  "/words/getList",
+  handleValidationErrors,
+  ContentController.getWords
+);
+
 router.post(
   "/words/create",
-  checkAuth,
   WordCreateValidation,
   handleValidationErrors,
   ContentController.wordCreate
