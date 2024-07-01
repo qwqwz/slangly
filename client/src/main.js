@@ -36,7 +36,7 @@ const Noir = definePreset(Aura, {
         primary: {
           color: "{zinc.50}",
           inverseColor: "#ffffff",
-          hoverColor: "{zinc.50}",
+          hoverColor: "#A8ABB4",
           activeColor: "{zinc.800}"
         },
         highlight: {
@@ -44,6 +44,12 @@ const Noir = definePreset(Aura, {
           focusBackground: "{zinc.700}",
           color: "#ffffff",
           focusColor: "#ffffff"
+        },
+        formField: {
+          borderRadius: "{border.radius.xl}",
+          background: false,
+          borderColor: "#A8ABB4",
+          focusBorderColor: "#91949B"
         }
       },
       dark: {

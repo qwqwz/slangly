@@ -1,9 +1,6 @@
 <script setup>
 import WordItem from "./components/WordMainItem.vue"
-import IconField from "primevue/iconfield"
-import InputIcon from "primevue/inputicon"
-import InputText from "primevue/inputtext"
-
+import TheHeader from "./components/TheHeader.vue"
 import "primeicons/primeicons.css"
 
 const wordItems = [
@@ -23,16 +20,8 @@ const wordItems = [
 </script>
 
 <template>
+  <TheHeader></TheHeader>
   <div>
-    <div class="header">
-      <IconField>
-        <InputIcon class="pi pi-search" />
-        <InputText
-          placeholder="Search"
-          class=""
-        />
-      </IconField>
-    </div>
     <div class="max-w-screen-lg mx-auto">
       <div class="flex flex-col gap-4">
         <WordItem
