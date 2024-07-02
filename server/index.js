@@ -13,7 +13,12 @@ const PORT = process.env.PORT || 4444;
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://192.168.1.64:5173",
+    credentials: true,
+  })
+);
 app.use("/api", router);
 
 const start = async () => {

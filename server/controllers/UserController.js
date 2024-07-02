@@ -2,39 +2,46 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import UserModel from "../models/User.js";
+import userService from "../service/userService.js";
 
 export const register = async (req, res) => {
   try {
-    const password = req.body.password;
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
+    // const password = req.body.password;
+    // const salt = await bcrypt.genSalt(10);
+    // const hash = await bcrypt.hash(password, salt);
 
-    const doc = new UserModel({
-      name: req.body.name,
-      email: req.body.email,
-      hashPassword: hash,
+    // const doc = new UserModel({
+    //   name: req.body.name,
+    //   email: req.body.email,
+    //   hashPassword: hash,
+    // });
+
+    // const user = await doc.save();
+
+    // const token = jwt.sign(
+    //   {
+    //     _id: user._id,
+    //   },
+    //   "secret123",
+    //   {
+    //     expiresIn: "30d",
+    //   }
+    // );
+
+    // const { passwordHash, ...userData } = user._doc;
+
+    // res.json({
+    //   ...userData,
+    //   token,
+    // });
+
+    const { email, name, password } = req.body;
+    const userData = await userService.register(email, name, password);
+    res.cookie("refreshToken", userData.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
     });
-
-    console.log(doc);
-
-    const user = await doc.save();
-
-    const token = jwt.sign(
-      {
-        _id: user._id,
-      },
-      "secret123",
-      {
-        expiresIn: "30d",
-      }
-    );
-
-    const { passwordHash, ...userData } = user._doc;
-
-    res.json({
-      ...userData,
-      token,
-    });
+    return res.json({ accessToken: userData.accessToken, user: userData.user });
   } catch (err) {
     console.log(err);
     res.status(500).json({
