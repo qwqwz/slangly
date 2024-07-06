@@ -7,7 +7,7 @@ defineProps({
 })
 </script>
 <template>
-  <div class="border rounded-xl p-8 border-s-stroke-light">
+  <div class="border rounded-lg p-8 border-s-stroke-light">
     <h2 class="font-jura font-bold text-3xl text-s-text-default pb-4 md:text-5xl">{{ title }}</h2>
     <div class="tags flex gap-2 mb-8 select-none text-s-text-default">
       <div

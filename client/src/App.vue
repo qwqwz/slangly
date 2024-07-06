@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, computed } from "vue"
+import { onMounted, computed, ref } from "vue"
 import { useWordsStore } from "./stores/WordsStore"
 
 import WordItem from "./components/WordMainItem.vue"
@@ -34,4 +34,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style></style>

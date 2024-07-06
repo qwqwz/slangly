@@ -4,8 +4,16 @@ import Aura from "@primevue/themes/aura"
 const Noir = definePreset(Aura, {
   components: {
     button: {
+      iconOnly: {
+        width: "42px",
+        color: "{primary.light.red}"
+      },
       outlined: {
-        primary: {}
+        primary: {
+          border: {
+            color: "{primary.light.red}"
+          }
+        }
       }
     }
   },
@@ -13,11 +21,13 @@ const Noir = definePreset(Aura, {
     primary: {
       light: {
         "text-default": "#373C4D",
-        stroke: "#A8ABB4"
+        stroke: "#A8ABB4",
+        red: "red",
+        bg: "#eaeaea"
       },
-      50: "{zinc.50}",
+      50: "#dddddd",
       100: "{zinc.100}",
-      200: "{zinc.200}",
+      200: "#A8ABB4",
       300: "{zinc.300}",
       400: "{zinc.400}",
       500: "{zinc.500}",
@@ -29,6 +39,11 @@ const Noir = definePreset(Aura, {
     },
     colorScheme: {
       light: {
+        outlined: {
+          primary: {
+            hoverColor: "red"
+          }
+        },
         primary: {
           color: "{primary.light.text-default}",
           inverseColor: "#ffffff",
@@ -46,6 +61,14 @@ const Noir = definePreset(Aura, {
           background: false,
           borderColor: "{primary.light.stroke}",
           focusBorderColor: "#91949B"
+        },
+        overlay: {
+          modal: {
+            background: "{primary.light.bg}"
+          }
+        },
+        content: {
+          borderColor: "{primary.light.stroke}"
         }
       },
       dark: {
