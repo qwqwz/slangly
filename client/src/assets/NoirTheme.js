@@ -23,7 +23,8 @@ const Noir = definePreset(Aura, {
         "text-default": "#373C4D",
         stroke: "#A8ABB4",
         red: "red",
-        bg: "#eaeaea"
+        bg: "#eaeaea",
+        block_bg: "#DDDDDD"
       },
       50: "#dddddd",
       100: "{zinc.100}",
@@ -39,6 +40,9 @@ const Noir = definePreset(Aura, {
     },
     colorScheme: {
       light: {
+        surface: {
+          200: "{primary.light.block_bg}"
+        },
         outlined: {
           primary: {
             hoverColor: "red"
