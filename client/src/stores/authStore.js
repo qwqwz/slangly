@@ -3,19 +3,26 @@ import { defineStore } from "pinia"
 
 export const useAuthStore = defineStore("authStore", {
   state: () => ({
-    email: "",
+    name: "",
+    emailInvalid: false,
+    validateEmailLoading: false,
+    emailErrorMessage: "",
     pass: "",
     currentTab: 1
   }),
   actions: {
-    async getWordsList() {
-      this.loading = true
+    async validateEmail(value) {
       try {
-        const res = await apiService.get("/words/getList")
-        this.wordsList = res.data
-        this.loading = false
+        const res = await apiService.post("/auth/validateEmail", { email: value })
+        this.emailInvalid = !res.data.valid
+        res.data.valid ? (this.emailErrorMessage = "") : (this.emailErrorMessage = "Данная почта уже занята")
       } catch (err) {
-        console.log(err)
+        if (err.response.data[0].msg == "Неверный формат почты") {
+          this.emailInvalid = true
+          this.emailErrorMessage = err.response.data[0].msg
+        }
+      } finally {
+        this.validateEmailLoading = false
       }
     }
   }

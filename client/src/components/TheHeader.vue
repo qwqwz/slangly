@@ -1,5 +1,6 @@
 <script setup>
 import { useAuthStore } from "../stores/authStore"
+import { debounce } from "lodash"
 
 import IconField from "primevue/iconfield"
 import InputIcon from "primevue/inputicon"
@@ -16,13 +17,27 @@ import { ref } from "vue"
 const authStore = useAuthStore()
 const activeTab = ref(authStore.currentTab)
 
-const name = ref("")
-const mail = ref("")
+const name = authStore.name
+const email = ref("")
+
 const pass = ref("")
 
 const inputValue = ref("")
 
 const showAuthDialog = ref(false)
+
+const handInputEnd = debounce(() => {
+  authStore.validateEmail(email.value)
+}, 500)
+
+const onInput = () => {
+  if (email.value.length > 0) {
+    authStore.validateEmailLoading = true
+    handInputEnd()
+  } else {
+    authStore.emailErrorMessage = ""
+  }
+}
 </script>
 
 <template>
@@ -70,11 +85,24 @@ const showAuthDialog = ref(false)
                 type="text"
                 placeholder="Имя"
               />
-              <InputText
-                v-model="mail"
-                type="text"
-                placeholder="Почта"
-              />
+              <div class="text-start">
+                <IconField>
+                  <InputText
+                    class="w-full"
+                    v-model="email"
+                    @input="onInput"
+                    type="text"
+                    placeholder="Почта"
+                    :invalid="authStore.emailInvalid && email.length > 0"
+                  />
+
+                  <InputIcon
+                    v-show="authStore.validateEmailLoading"
+                    class="pi pi-spin pi-spinner ml-1"
+                  />
+                </IconField>
+                <small class="self-start text-s-text-red">{{ authStore.emailErrorMessage }}</small>
+              </div>
               <Button
                 @click="activeTab = 2"
                 aria-label="Зарегистрироваться"
@@ -101,13 +129,12 @@ const showAuthDialog = ref(false)
           >
             <h2 class="text-4xl font-bold font-jura">Укажите пароль</h2>
             <div class="auth-content flex flex-col gap-2 justify-center w-64">
-              <div class="w-full">
-                <Password
-                  v-model="pass"
-                  :feedback="false"
-                  toggleMask
-                />
-              </div>
+              <Password
+                class="pass-field"
+                v-model="pass"
+                :feedback="false"
+                toggleMask
+              />
               <Button
                 @click="activeTab = 1"
                 aria-label="Зарегистрироваться"
@@ -122,6 +149,9 @@ const showAuthDialog = ref(false)
 </template>
 
 <style>
+.pass-field input {
+  width: 100%;
+}
 .p-divider-content {
   background-color: #eaeaea !important;
 }
