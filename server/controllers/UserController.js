@@ -7,6 +7,14 @@ import userService from "../service/userService.js";
 export const register = async (req, res) => {
   try {
     const { email, name, password } = req.body;
+
+    const existingUser = await UserModel.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: "Пользователь с таким email зарегистрирован" });
+    }
+
     const userData = await userService.register(email, name, password);
     res.cookie("refreshToken", userData.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
