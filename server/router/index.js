@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   loginValidation,
+  emailValidation,
   registerValidation,
   WordCreateValidation,
 } from "../validations.js";
@@ -12,6 +13,13 @@ import * as ContentController from "../controllers/ContentController.js";
 const router = new Router();
 
 router.get("/auth/me", checkAuth, handleValidationErrors, UserController.getMe);
+
+router.post(
+  "/auth/validateEmail",
+  emailValidation,
+  handleValidationErrors,
+  UserController.validateEmail
+);
 
 router.post(
   "/auth/login",

@@ -94,3 +94,21 @@ export const getMe = async (req, res) => {
     });
   }
 };
+
+export const validateEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const existingUser = await UserModel.findOne({ email });
+    if (existingUser) {
+      return res.status(200).json({
+        valid: false,
+        message: "Пользователь с таким email зарегистрирован",
+      });
+    }
+
+    return res.status(200).json({ valid: true });
+  } catch (err) {
+    res.status(400).json({ message: "Ошибка валидации email" });
+  }
+};
