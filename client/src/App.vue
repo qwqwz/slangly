@@ -1,9 +1,12 @@
 <script setup>
-import { onMounted, computed, ref } from "vue"
+import { onMounted, computed } from "vue"
 import { useWordsStore } from "./stores/WordsStore"
 
 import WordItem from "./components/WordMainItem.vue"
 import TheHeader from "./components/TheHeader.vue"
+
+import Skeleton from "primevue/skeleton"
+
 import "primeicons/primeicons.css"
 
 const wordsStore = useWordsStore()
@@ -20,7 +23,15 @@ onMounted(() => {
   <div>
     <div class="max-w-screen-lg mx-auto">
       <div class="flex flex-col gap-4">
-        <div v-if="wordsStore.loading">Загрузка...</div>
+        <div v-if="wordsStore.loading">
+          <Skeleton
+            v-for="item in new Array(10)"
+            :key="item"
+            width="100%"
+            class="mb-2"
+            height="12rem"
+          ></Skeleton>
+        </div>
         <WordItem
           v-else
           v-for="item in wordItems"
