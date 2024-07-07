@@ -12,9 +12,10 @@ export const useWordsStore = defineStore("wordsStore", {
       try {
         const res = await apiService.get("/words/getList")
         this.wordsList = res.data
-        this.loading = false
       } catch (err) {
         console.log(err)
+      } finally {
+        this.loading = false
       }
     }
   }
